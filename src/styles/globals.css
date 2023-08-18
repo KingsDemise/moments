@@ -31,3 +31,6 @@ body {
 .btn {
   @apply h-7 hover:scale-125 transition-transform duration-200 ease-out cursor-pointer;
 }
+.head_text {
+  @apply mt-5 text-5xl font-extrabold leading-[1.15] sm:text-6xl;
+}
