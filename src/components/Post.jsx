@@ -94,13 +94,19 @@ export default function Post({ img, userImg, caption, username, id }) {
         </div>
       )}
       <p className="p-5 truncate text-black">
+        {likes.length > 0 &&
+          (likes.length == 1 ? (
+            <p className="font-bold mb-1 text-black">{likes.length} Upvote</p>
+          ) : (
+            <p className="font-bold mb-1 text-black">{likes.length} Upvotes</p>
+          ))}
         <span className="font-bold mr-2 ">{caption}</span>
       </p>
       {comments.length > 0 && (
         <div className="mx-10 max-h-24 overflow-y-scroll scrollbar-none">
-          {comments.map((comment, index) => (
+          {comments.map((comment) => (
             <div
-              key={index}
+              key={comment.data().id}
               className="flex items-center space-x-2 mb-2 text-black"
             >
               <img
