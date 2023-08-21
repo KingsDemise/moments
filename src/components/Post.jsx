@@ -1,11 +1,5 @@
 "use client";
-import {
-  ArrowUpIcon,
-  BookmarkIcon,
-  ChatIcon,
-  DotsHorizontalIcon,
-  EmojiHappyIcon,
-} from "@heroicons/react/outline";
+import { ArrowUpIcon, ChatIcon } from "@heroicons/react/outline";
 import React, { useRef, useState } from "react";
 
 export default function Post({ img, userImg, caption, username, id }) {
@@ -25,7 +19,6 @@ export default function Post({ img, userImg, caption, username, id }) {
           alt={username}
         />
         <p className="flex-1 text-black">{username}</p>
-        <DotsHorizontalIcon className="text-black h-5 " />
       </div>
       <img className="object-cover border p-4 w-full " src={img} alt="" />
       <div className="flex justify-between px-4 pt-4">
