@@ -29,7 +29,7 @@ export default function UploadModal() {
 
     const docRef = await addDoc(collection(db, "posts"), {
       caption: captionRef.current.value,
-      username: session.user.name,
+      username: session.user.username,
       profileImg: session.user.image,
       timestamp: serverTimestamp(),
     });

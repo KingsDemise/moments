@@ -5,10 +5,13 @@ import { useSession } from "next-auth/react";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import Moment from "react-moment";
@@ -21,18 +24,21 @@ export default function Post({ img, userImg, caption, username, id }) {
   };
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [likes, setLikes] = useState([]);
+  const [hasLiked, setHasLiked] = useState(false);
+  const { data: session } = useSession();
+  console.log(session);
   async function sendComment(event) {
     event.preventDefault();
     const commentToSend = comment;
     setComment("");
     await addDoc(collection(db, "posts", id, "comments"), {
       comment: commentToSend,
-      username: session.user.name,
+      username: session.user.username,
       userImage: session.user.image,
       timestamp: serverTimestamp(),
     });
   }
-  const { data: session } = useSession();
   useEffect(() => {
     const fetchComments = onSnapshot(
       query(
@@ -44,6 +50,26 @@ export default function Post({ img, userImg, caption, username, id }) {
       }
     );
   }, [db, id]);
+  useEffect(() => {
+    const fetchLikes = onSnapshot(
+      collection(db, "posts", id, "likes"),
+      (snapshot) => setLikes(snapshot.docs)
+    );
+  }, [db]);
+  useEffect(() => {
+    setHasLiked(
+      likes.findIndex((like) => like.id === session?.user.uid) !== -1
+    );
+  }, [likes]);
+  async function likePost() {
+    if (hasLiked) {
+      await deleteDoc(doc(db, "posts", id, "likes", session.user.uid));
+    } else {
+      await setDoc(doc(db, "posts", id, "likes", session.user.uid), {
+        username: session.user.username,
+      });
+    }
+  }
   return (
     <div className="bg-white my-7 border rounded-md">
       <div className="flex items-center p-5">
@@ -58,7 +84,11 @@ export default function Post({ img, userImg, caption, username, id }) {
       {session && (
         <div className="flex justify-between px-4 pt-4">
           <div className="flex space-x-4">
-            <ArrowUpIcon className="btn text-black" />
+            {hasLiked ? (
+              <ArrowUpIcon onClick={likePost} className="text-red-400 btn" />
+            ) : (
+              <ArrowUpIcon onClick={likePost} className="btn text-black" />
+            )}
             <ChatIcon className="btn text-black" />
           </div>
         </div>
